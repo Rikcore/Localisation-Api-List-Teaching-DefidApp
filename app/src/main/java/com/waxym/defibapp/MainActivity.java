@@ -133,10 +133,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<ResultModel> call, Response<ResultModel> response) {
                 Log.e("SUCCESS", "SUCCESS");
-                List<Record> list = response.body().getRecords();
-                calculateDistance(list);
+                if(response.isSuccessful() && response.body() != null){
+                    List<Record> list = response.body().getRecords();
+                    calculateDistance(list);
+                }
             }
-
             @Override
             public void onFailure(Call<ResultModel> call, Throwable t) {
                 Log.e("ERROR", "ERROR");
