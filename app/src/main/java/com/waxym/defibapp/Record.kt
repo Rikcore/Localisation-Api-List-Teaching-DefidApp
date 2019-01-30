@@ -4,8 +4,7 @@ import java.io.Serializable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-class Record : Serializable//, Comparable<Record>
-{
+class Record : Serializable {
 
     @SerializedName("datasetid")
     @Expose
@@ -26,10 +25,4 @@ class Record : Serializable//, Comparable<Record>
     companion object {
         private const val serialVersionUID = -5642240646859572265L
     }
-
-    /*@Override
-    public int compareTo(Record o) {
-        int result = Integer.compare(getFields().getDistance(), o.getFields().getDistance());
-        return result;
-    }*/
 }

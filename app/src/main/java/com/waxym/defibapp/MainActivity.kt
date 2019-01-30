@@ -27,7 +27,6 @@ class MainActivity : AppCompatActivity() {
 
     private var locationManager: LocationManager? = null
     private var locationListener: LocationListener? = null
-
     private var currentLocation: Location? = null
 
 
@@ -76,7 +75,7 @@ class MainActivity : AppCompatActivity() {
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         when (requestCode) {
             0 -> {
-                if (grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     initLocation()
                 } else {
                     Log.e("ERROR", "DENIED")
@@ -94,7 +93,6 @@ class MainActivity : AppCompatActivity() {
         } catch (e: SecurityException) {
             Log.e("Location error", "Location error")
         }
-
     }
 
     override fun onStop() {
@@ -112,17 +110,18 @@ class MainActivity : AppCompatActivity() {
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build()
 
-        val retrofitInterface = retrofit.create<RetrofitInterface>(RetrofitInterface::class.java!!)
+        val retrofitInterface = retrofit.create<RetrofitInterface>(RetrofitInterface::class.java)
 
         val call = retrofitInterface.getResult("defibrillateurs", 100)
 
         call.enqueue(object : Callback<ResultModel> {
             override fun onResponse(call: Call<ResultModel>, response: Response<ResultModel>) {
                 Log.e("SUCCESS", "SUCCESS")
-                val list = response.body().records
-                calculateDistance(list!!)
+                if(response.isSuccessful && response.body() != null){
+                    val list = response.body().records
+                    calculateDistance(list!!)
+                }
             }
-
             override fun onFailure(call: Call<ResultModel>, t: Throwable) {
                 Log.e("ERROR", "ERROR")
             }

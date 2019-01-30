@@ -8,11 +8,7 @@ import android.widget.BaseAdapter
 import android.widget.TextView
 
 class DefibAdapter(private val context: Context, private val recordList: List<Record>) : BaseAdapter() {
-    private val layoutInflater: LayoutInflater
-
-    init {
-        layoutInflater = LayoutInflater.from(context)
-    }
+    private val layoutInflater: LayoutInflater = LayoutInflater.from(context)
 
     override fun getCount(): Int {
         return recordList.size
@@ -27,14 +23,14 @@ class DefibAdapter(private val context: Context, private val recordList: List<Re
     }
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-        var convertView = convertView
-        if (convertView == null) {
-            convertView = layoutInflater.inflate(R.layout.defib_item, parent, false)
+        var v = convertView
+        if (v == null) {
+            v = layoutInflater.inflate(R.layout.defib_item, parent, false)
         }
-        val textViewLocationName = convertView!!.findViewById<TextView>(R.id.textViewLocationName)
-        val textViewAdress = convertView.findViewById<TextView>(R.id.textViewAdress)
-        val textViewDistance = convertView.findViewById<TextView>(R.id.textViewDistance)
-        val textViewImplantation = convertView.findViewById<TextView>(R.id.textViewImplantation)
+        val textViewLocationName = v!!.findViewById<TextView>(R.id.textViewLocationName)
+        val textViewAdress = v.findViewById<TextView>(R.id.textViewAdress)
+        val textViewDistance = v.findViewById<TextView>(R.id.textViewDistance)
+        val textViewImplantation = v.findViewById<TextView>(R.id.textViewImplantation)
 
         val currentDefib = recordList[position]
         textViewLocationName.setText(String.format(context.getString(R.string.site_name), currentDefib.fields!!.nomSite))
@@ -46,6 +42,6 @@ class DefibAdapter(private val context: Context, private val recordList: List<Re
             textViewImplantation.text = context.getString(R.string.no_implantation)
         }
 
-        return convertView
+        return v
     }
 }
