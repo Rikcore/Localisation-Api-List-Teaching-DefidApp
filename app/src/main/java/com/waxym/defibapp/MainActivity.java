@@ -18,14 +18,11 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -51,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
         locationListener = new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
+                Log.e("LOCATION CHANGED", "NEW LOCATION");
                 currentLocation = location;
                 getList();
             }
@@ -91,7 +89,6 @@ public class MainActivity extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
         switch (requestCode) {
             case 0: {
-
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     initLocation();
                 } else {
@@ -103,8 +100,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void initLocation(){
         try {
-            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 5000, 10, locationListener);
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 10, locationListener);
+            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 60000, 5, locationListener);
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 60000, 5, locationListener);
             currentLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
             getList();
         } catch (SecurityException e){
@@ -130,7 +127,7 @@ public class MainActivity extends AppCompatActivity {
 
         RetrofitInterface retrofitInterface = retrofit.create(RetrofitInterface.class);
 
-        Call<ResultModel> call = retrofitInterface.getResult();
+        Call<ResultModel> call = retrofitInterface.getResult("defibrillateurs", 100);
 
         call.enqueue(new Callback<ResultModel>() {
             @Override
@@ -180,7 +177,7 @@ public class MainActivity extends AppCompatActivity {
                 Record record = (Record) listView.getAdapter().getItem(position);
                 double latitude = record.getFields().getGeoPoint2d().get(0);
                 double longitude = record.getFields().getGeoPoint2d().get(1);
-                String url = "https://www.google.com/maps/dir/?api=1&destination=" + latitude + "," + longitude + "&travelmode=driving";
+                String url = "https://www.google.com/maps/dir/?api=1&destination=" + latitude + "," + longitude + "&travelmode=walking";
                 Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
                 startActivity(intent);
             }

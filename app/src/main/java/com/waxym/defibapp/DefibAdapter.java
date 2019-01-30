@@ -46,13 +46,13 @@ public class DefibAdapter extends BaseAdapter {
         TextView textViewImplantation = convertView.findViewById(R.id.textViewImplantation);
 
         Record currentDefib = recordList.get(position);
-        textViewLocationName.setText(String.format("Nom du site : %s", currentDefib.getFields().getNomSite()));
-        textViewAdress.setText(String.format("Adresse : %s", currentDefib.getFields().getAdresse()));
-        textViewDistance.setText(String.format("%s mètres", String.valueOf(currentDefib.getFields().getDistance())));
+        textViewLocationName.setText(String.format(context.getString(R.string.site_name), currentDefib.getFields().getNomSite()));
+        textViewAdress.setText(String.format(context.getString(R.string.adress), currentDefib.getFields().getAdresse()));
+        textViewDistance.setText(String.format(context.getString(R.string.meter), String.valueOf(currentDefib.getFields().getDistance())));
         if(currentDefib.getFields().getImplantation() != null){
-            textViewImplantation.setText(String.format("Implantation : %s", currentDefib.getFields().getImplantation()));
+            textViewImplantation.setText(String.format(context.getString(R.string.implantation), currentDefib.getFields().getImplantation()));
         } else {
-            textViewImplantation.setText("Implantation : NC");
+            textViewImplantation.setText(context.getString(R.string.no_implantation));
         }
 
         return convertView;

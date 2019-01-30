@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">DefibApp</string>
+    <string name="defib_title">Défibrilateurs à proximité</string>
+    <string name="site_name">Nom du site : %s</string>
+    <string name="adress">Adresse : %s</string>
+    <string name="meter">%s m</string>
+    <string name="implantation">Implantation : %s</string>
+    <string name="no_implantation">Implantation : NC</string>
 </resources>
