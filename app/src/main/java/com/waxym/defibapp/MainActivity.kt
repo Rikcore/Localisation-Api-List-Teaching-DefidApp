@@ -12,7 +12,11 @@ import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.v7.widget.DividerItemDecoration
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.util.Log
+import android.view.View
 import android.widget.AdapterView
 import android.widget.ListView
 import com.google.gson.GsonBuilder
@@ -23,11 +27,12 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), RecyclerDefibAdapter.ItemClickListener {
 
     private var locationManager: LocationManager? = null
     private var locationListener: LocationListener? = null
     private var currentLocation: Location? = null
+    private var recyclerDefibAdapter : RecyclerDefibAdapter? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -146,17 +151,20 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun displayList(list: List<Record>) {
-        val listView = findViewById<ListView>(R.id.listView)
-        val defibAdapter = DefibAdapter(this, list)
-        listView.adapter = defibAdapter
+        val recyclerView = findViewById<RecyclerView>(R.id.recyclerView)
+        recyclerView.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
+        recyclerDefibAdapter = RecyclerDefibAdapter(this, list)
+        recyclerView.layoutManager = LinearLayoutManager(this)
+        recyclerDefibAdapter!!.setClickListener(this)
+        recyclerView.adapter = recyclerDefibAdapter
+    }
 
-        listView.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
-            val record = listView.adapter.getItem(position) as Record
-            val latitude = record.fields!!.geoPoint2d!![0]
-            val longitude = record.fields!!.geoPoint2d!![1]
-            val url = "https://www.google.com/maps/dir/?api=1&destination=$latitude,$longitude&travelmode=walking"
-            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-            startActivity(intent)
-        }
+    override fun onItemClick(view: View, position: Int) {
+        val record = recyclerDefibAdapter!!.getItem(position)
+        val latitude = record.fields!!.geoPoint2d!!.get(0)
+        val longitude = record.fields!!.geoPoint2d!!.get(1)
+        val url = "https://www.google.com/maps/dir/?api=1&destination=$latitude,$longitude&travelmode=walking"
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+        startActivity(intent)
     }
 }
