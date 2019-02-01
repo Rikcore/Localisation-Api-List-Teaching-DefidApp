@@ -14,6 +14,8 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -29,12 +31,14 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements RecyclerDefibAdapter.ItemClickListener {
 
     private LocationManager locationManager;
     private LocationListener locationListener;
 
     private Location currentLocation;
+
+    private RecyclerDefibAdapter recyclerDefibAdapter;
 
 
     @Override
@@ -168,7 +172,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void displayList(List<Record> list){
-        final ListView listView = findViewById(R.id.listView);
+        /*final ListView listView = findViewById(R.id.listView);
         final DefibAdapter defibAdapter = new DefibAdapter(this, list);
         listView.setAdapter(defibAdapter);
 
@@ -182,6 +186,24 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
                 startActivity(intent);
             }
-        });
+        });*/
+
+        final RecyclerView recyclerView = findViewById(R.id.recyclerView);
+        recyclerDefibAdapter = new RecyclerDefibAdapter(this, list);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerDefibAdapter.setClickListener(this);
+        recyclerView.setAdapter(recyclerDefibAdapter);
+
+
+    }
+
+    @Override
+    public void onItemClick(View view, int position) {
+        Record record = recyclerDefibAdapter.getItem(position);
+        double latitude = record.getFields().getGeoPoint2d().get(0);
+        double longitude = record.getFields().getGeoPoint2d().get(1);
+        String url = "https://www.google.com/maps/dir/?api=1&destination=" + latitude + "," + longitude + "&travelmode=walking";
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+        startActivity(intent);
     }
 }
